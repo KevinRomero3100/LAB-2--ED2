@@ -33,6 +33,11 @@ namespace LAB_1___DataStructures.NoLinealStructures.Tree
 
         public void Insert(T value)
         {
+            //obtenemos la raiz
+            //comparamos el T con la raiz
+
+            //
+
             throw new NotImplementedException();
         }
 

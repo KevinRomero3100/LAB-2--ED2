@@ -11,7 +11,7 @@ namespace LAB_1___DataStructures.NoLinealStructures.Tree
         public List<int> Childs { get; set; }
         public List<T> Value { get; set; }
 
-        public BNode(int grade)
+        public BNode(int grade, int id, int father, List<int> childs, List<T> value)
         {
             if (Value == null)
             {
@@ -22,6 +22,7 @@ namespace LAB_1___DataStructures.NoLinealStructures.Tree
                     Childs.Add(-1);
                 }
             }
+           // Value.Add(value);
         }
     }
 }
