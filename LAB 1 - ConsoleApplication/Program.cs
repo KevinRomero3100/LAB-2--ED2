@@ -1,5 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
+using LAB_1___DataStructures.NoLinealStructures.Tree;
+using LAB_1___DataStructures;
 
 namespace LAB_1___ConsoleApplication
 {
@@ -7,52 +10,19 @@ namespace LAB_1___ConsoleApplication
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("\t\t\t- LAB 1 -\n\nKevin Romero 1047519\nJosé De León 1072619");
+            Console.WriteLine("\t\t\t- LAB 2 -\n\nKevin Romero 1047519\nJosé De León 1072619");
+
+            string path = @"C:\Users\José De León\Desktop\lab\LAB-2--ED2\data.txt";
 
 
-            LAB_1___DataStructures.NoLinealStructures.Tree.MultipathTree<int> Tree = new LAB_1___DataStructures.NoLinealStructures.Tree.MultipathTree<int>();
-            Tree.Grade = 3;
-            Tree.Comparer = KeyComparison;
-
-            int[] ar = {62,85,93,43,25,28,36,52,5,63,38,94,81,33,69,40,20,88,97,16};
-            string values = "";
-            for (int i = 0; i < ar.Length; i++)
-            {
-                values += ar[i].ToString() + ", ";
-                Tree.Insert(ar[i]);
-            }
-
-            List<int> TraversalTree;
-
-            string inorden = "";
-            TraversalTree = Tree.ToInOrden();
-            for (int i = 0; i < TraversalTree.Count; i++)
-            {
-                inorden+=TraversalTree[i].ToString()+", ";
-            }
-
-            string preorden = "";
-            TraversalTree = Tree.ToPreOrden();
-            for (int i = 0; i < TraversalTree.Count; i++)
-            {
-                preorden += TraversalTree[i].ToString() + ", ";
-            }
+            BTree<int> Tree = new BTree<int>();
+            Tree.IniciateTree(path, KeyComparison);
 
 
-            string postorden = "";
-            TraversalTree = Tree.ToPostOrden();
-            for (int i = 0; i < TraversalTree.Count; i++)
-            {
-                postorden += TraversalTree[i].ToString() + ", ";
-            }
 
-            Console.WriteLine("\nValores: \n\t" + values.Substring(0, inorden.Length - 2));
-            Console.WriteLine("\nGrado: \n\t"+Tree.Grade.ToString());
+            Tree.Test(path, 5);
 
 
-            Console.WriteLine("\n\n\nInorden: \n\t" + inorden.Substring(0,inorden.Length-2));
-            Console.WriteLine("\nPreorden: \n\t" + preorden.Substring(0, inorden.Length - 2));
-            Console.WriteLine("\nPostorden: \n\t" + postorden.Substring(0, inorden.Length - 2));
 
             Console.ReadLine();
         }

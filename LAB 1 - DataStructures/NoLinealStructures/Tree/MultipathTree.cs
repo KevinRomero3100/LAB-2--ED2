@@ -117,7 +117,7 @@ namespace LAB_1___DataStructures.NoLinealStructures.Tree
         private void PreOrden(Node<T> node, List<T> currentList)
         {
             TraverseNode(node.Value, currentList);
-            for (int j = 0; j <= (Grade-1); j++)
+            for (int j = 0; j <= (Grade - 1); j++)
             {
                 if (node.References[j] != null)
                 {
@@ -148,14 +148,14 @@ namespace LAB_1___DataStructures.NoLinealStructures.Tree
             {
                 if (i == 0)
                 {
-                    if(node.References[i] != null)
+                    if (node.References[i] != null)
                     {
                         InOrden(node.References[0], currentList);
                     }
                     currentList.Add(node.Value[i]);
                     if (node.References[i + 1] != null)
                     {
-                        InOrden(node.References[i+1], currentList);
+                        InOrden(node.References[i + 1], currentList);
                     }
                 }
                 else
@@ -216,5 +216,6 @@ namespace LAB_1___DataStructures.NoLinealStructures.Tree
         {
             throw new NotImplementedException();
         }
+
     }
 }
