@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Text;
 using LAB_1___DataStructures.NoLinealStructures.Tree;
 
@@ -14,7 +15,7 @@ namespace LAB_1___DataStructures.NoLinealStructures.Tree
         public Delegate Comparer;
         public int Count;
 
-        public void IniciateTree(string path, Delegate comparer)
+        public void IniciateTree(string path, Delegate comparer, Delegate converValues)
         {
             FileManage<T> fm = new FileManage<T>();
             int[] meta_data = fm.ReadProperties(path);
@@ -24,20 +25,14 @@ namespace LAB_1___DataStructures.NoLinealStructures.Tree
             Comparer = comparer;
         }
 
-        private BNode<T> GetNode(string path, int id)
+        private BNode<T> GetNode(string path, int id, Delegate ConvertValues)
         {
             FileManage<T> fm = new FileManage<T>();
-            return fm.CastNode(path, id, Grade);
-
+            return fm.CastNode(path, id, Grade, ConvertValues);
         }
 
         public void Insert(T value)
         {
-            //obtenemos la raiz
-            //comparamos el T con la raiz
-
-            //
-
             throw new NotImplementedException();
         }
 
@@ -66,11 +61,7 @@ namespace LAB_1___DataStructures.NoLinealStructures.Tree
             throw new NotImplementedException();
         }
 
-        public void Test(string path, int id)
-        {
-            BNode<T> test = GetNode(path, id);
-            throw new NotImplementedException();
-        }
+
     }
 
 }
