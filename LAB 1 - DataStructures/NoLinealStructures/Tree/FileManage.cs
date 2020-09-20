@@ -41,11 +41,14 @@ namespace LAB_1___DataStructures
         {
             string test = node.ToString();
             test += (string)GetValues.DynamicInvoke(node.Values, FieldLength);
-            byte[] bytes = Encoding.ASCII.GetBytes(test);
+            byte[] bytes = Encoding.UTF8.GetBytes(test);
             int position = node.Id;
+            byte newLine = 10;
+
             using (var fs = new FileStream(Path, FileMode.OpenOrCreate))
             {
                 fs.Seek((position - 1) * LineLength + MetadataLength, SeekOrigin.Begin);
+                fs.WriteByte(newLine);
                 fs.Write(bytes, 0, bytes.Length);
             }
         }
@@ -56,7 +59,7 @@ namespace LAB_1___DataStructures
                 var buffer = new byte[LineLength];
                 using (var fs = new FileStream(Path, FileMode.OpenOrCreate))
                 {
-                    fs.Seek((position - 1) * LineLength + MetadataLength, SeekOrigin.Begin);
+                    fs.Seek((position - 1) * LineLength + MetadataLength + 1, SeekOrigin.Begin);
                     fs.Read(buffer, 0, LineLength);
                 }
 
@@ -64,7 +67,7 @@ namespace LAB_1___DataStructures
 
                 int id = int.Parse(node_text.Substring(0, 10).Trim());
                 string test = node_text.Substring(12, 10).Trim();
-                int father = int.Parse(node_text.Substring(12, 9).Trim());
+                int father = int.Parse(node_text.Substring(11, 9).Trim());
                 var childsString = node_text.Substring(22, 30).Trim().Split(',').ToList<string>();
 
                 List<int> childs = new List<int>();
@@ -72,17 +75,27 @@ namespace LAB_1___DataStructures
                 {
                     childs.Add(int.Parse(item));
                 }
-                
-                //List<string> valuesString = new List<string>(Split(tempVal, FieldLength));
-                //List<string> valuesString = new List<string>();
-                //var valsTem = node_text.Substring(53).Replace('\0', ' ').TrimEnd();
-                //for (int i = 53; i < node_text.Length; i += FieldLength)
-                //{
-                //    valuesString.Add(valsTem.Substring(i, FieldLength).Trim());
-                //}
 
-                // tempVal = node_text.Substring(53).Replace("\n", " ").Replace("\0", " ").Trim();
+                List<string> valuesString = new List<string>();
+                //var valsTem = node_text.Substring(53).Replace('\0', ' ').TrimEnd();
+                for (int i = 53; i < node_text.Length; i += FieldLength)
+                {
+                    valuesString.Add(node_text.Substring(i, FieldLength).Replace('\0', ' ').Trim());
+                }
+
+                List<string> ts = new List<string>();
+                foreach (var item in valuesString)
+                {
+                    if (item != "")
+                    {
+                        ts.Add(item);
+                    }
+                }
+                valuesString = ts;
+
+                //tempVal = node_text.Substring(53).Replace("\n", " ").Replace("\0", " ").Trim();
                 List<T> valuesT = (List<T>)ConvertValues.DynamicInvoke(valuesString);
+                
 
                 BNode <T> newNode = new BNode<T>(Grade);
                 newNode.Id = id;
@@ -97,6 +110,7 @@ namespace LAB_1___DataStructures
 
                 return null;
             }
+
         }
         static IEnumerable<string> Split(string str, int fieldlegth)
         {

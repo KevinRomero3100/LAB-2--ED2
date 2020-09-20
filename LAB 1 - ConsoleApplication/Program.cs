@@ -31,7 +31,7 @@ namespace LAB_1___ConsoleApplication
             string path = @"C:\Users\kevin\OneDrive\Documentos\GitHub\LAB-2--ED2\data.txt";
             file.Path = path;
             file.LineLength = 68;
-            file.MetadataLength = 118;
+            file.MetadataLength = 116;
             file.ConvertValues = convertToInt;
             file.GetValues = convertTostring;
             file.FieldLength = 3;
@@ -40,10 +40,10 @@ namespace LAB_1___ConsoleApplication
             BTree<int> Tree = new BTree<int>();
             Tree.fm = file;
             Tree.IniciateTree(path, KeyComparison, convertToInt);
-            Tree.Insert(64);
-            Tree.Insert(35);
-            Tree.Insert(80);
-            Tree.Insert(80);
+            for (int i = 1; i < 51; i++)
+            {
+                Tree.Insert(i);
+            }
             Console.ReadLine();
         }
 
@@ -55,7 +55,7 @@ namespace LAB_1___ConsoleApplication
         };
         static List<int> ConvertirEnteros(List<string> values)
         {
-            List<int> Values = new List<int>(5-1);
+            List<int> Values = new List<int>();
             foreach (var item in values)
             {
                 if (int.Parse(item) != 0)

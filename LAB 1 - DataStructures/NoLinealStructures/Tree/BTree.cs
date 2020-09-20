@@ -33,7 +33,6 @@ namespace LAB_1___DataStructures.NoLinealStructures.Tree
 
         public void Insert(T value)
         {
-
             BNode<T> Root = GetNode(RootId);
             if (Root == null)
             {
@@ -55,16 +54,15 @@ namespace LAB_1___DataStructures.NoLinealStructures.Tree
                 }
                 else
                 {
-                    toIncert(Root, value);
+                    RootId++; //prueba aqui deveria ir el metodo recursivo;
                 }
             }
             
         }
 
 
-        void toIncert(BNode<T> nodef, T value)
+        void toIncert(BNode<T> nodef, T value, int id)
         {
-
         }
         private BNode<T> SortNode(BNode<T> node)
         {
