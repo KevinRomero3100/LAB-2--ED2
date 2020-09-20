@@ -18,15 +18,32 @@ namespace LAB_1___ConsoleApplication
         delegate List<int> ConvertValues(List<string> values);
         static ConvertValues convertToInt = new ConvertValues(ConvertirEnteros);
 
+        delegate string ConvertString(List<int> values, int lend);
+        static ConvertString convertTostring = new ConvertString(ConvertirString);
+
+
+
         static void Main(string[] args)
         {
             Console.WriteLine("\t\t\t- LAB 2 -\n\nKevin Romero 1047519\nJosé De León 1072619");
-
-            string path = @"C:\Users\kevin\OneDrive\Documentos\GitHub\LAB-2--ED2\data.txt";
-            BTree<int> Tree = new BTree<int>();
+            FileManage<int> file = new FileManage<int>();
             
-            Tree.IniciateTree(path, KeyComparison, convertToInt);
+            string path = @"C:\Users\kevin\OneDrive\Documentos\GitHub\LAB-2--ED2\data.txt";
+            file.Path = path;
+            file.LineLength = 68;
+            file.MetadataLength = 118;
+            file.ConvertValues = convertToInt;
+            file.GetValues = convertTostring;
+            file.FieldLength = 3;
 
+
+            BTree<int> Tree = new BTree<int>();
+            Tree.fm = file;
+            Tree.IniciateTree(path, KeyComparison, convertToInt);
+            Tree.Insert(64);
+            Tree.Insert(35);
+            Tree.Insert(80);
+            Tree.Insert(80);
             Console.ReadLine();
         }
 
@@ -36,15 +53,27 @@ namespace LAB_1___ConsoleApplication
             if (x2 > x1) return -1;
             return 0;
         };
-
         static List<int> ConvertirEnteros(List<string> values)
         {
             List<int> Values = new List<int>(5-1);
             foreach (var item in values)
             {
-                Values.Add(int.Parse(item));
+                if (int.Parse(item) != 0)
+                {
+                    Values.Add(int.Parse(item));
+                }
             }
             return Values;
+        }
+        static string ConvertirString(List<int> values, int lend)
+        {
+            string Val = "";
+            string lendS = "{0," + lend.ToString() + "}";
+            foreach (var item in values)
+            {
+                Val = Val + $"{string.Format(lendS, item.ToString())}";
+            }
+            return Val;
         }
     }
 }

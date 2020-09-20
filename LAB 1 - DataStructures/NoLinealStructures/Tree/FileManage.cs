@@ -7,12 +7,21 @@ using System.Data.SqlTypes;
 using System.Text.Json.Serialization;
 using System.Runtime.InteropServices;
 using System.Linq;
+using System.Xml.Serialization;
+using System.Text.Encodings.Web;
 
 namespace LAB_1___DataStructures
 {
-    class FileManage<T>
+    public class FileManage<T>
     {
         public int LineLength { get; set; }
+        public string Path { get; set; }
+        public int MetadataLength { get; set; }
+        public int Grade { get; set; }
+        public int FieldLength { get; set; }
+        public Delegate ConvertValues;
+        public Delegate GetValues;
+
 
         public int[] ReadProperties(string path)
         {
@@ -28,35 +37,71 @@ namespace LAB_1___DataStructures
             }
             return properties;
         }
-
-        public BNode<T> CastNode(string path, int position, int grade, Delegate ConvertValues)
+        public void WriteNode(BNode<T> node)
         {
-            int metadatelen = 118;
-            int linelen = 90;
-            var buffer = new byte[linelen];
-            using (var fs = new FileStream(path, FileMode.OpenOrCreate))
+            string test = node.ToString();
+            test += (string)GetValues.DynamicInvoke(node.Values, FieldLength);
+            byte[] bytes = Encoding.ASCII.GetBytes(test);
+            int position = node.Id;
+            using (var fs = new FileStream(Path, FileMode.OpenOrCreate))
             {
-                fs.Seek((position - 1) * linelen + metadatelen, SeekOrigin.Begin);
-                fs.Read(buffer, 0, linelen);
+                fs.Seek((position - 1) * LineLength + MetadataLength, SeekOrigin.Begin);
+                fs.Write(bytes, 0, bytes.Length);
             }
-
-            string node_text = Encoding.UTF8.GetString(buffer);
-
-            int id = int.Parse(node_text.Substring(0, 20).Trim());
-            int father = int.Parse(node_text.Substring(21, 25).Trim());
-            var childsString = node_text.Substring(47, 25).Trim().Split(',').ToList<string>();
-
-            List<int> childs = new List<int>();
-            foreach (var item in childsString)
+        }
+        public BNode<T> CastNode(int position)
+        {
+            try
             {
-                childs.Add(int.Parse(item));
+                var buffer = new byte[LineLength];
+                using (var fs = new FileStream(Path, FileMode.OpenOrCreate))
+                {
+                    fs.Seek((position - 1) * LineLength + MetadataLength, SeekOrigin.Begin);
+                    fs.Read(buffer, 0, LineLength);
+                }
+
+                string node_text = Encoding.UTF8.GetString(buffer);
+
+                int id = int.Parse(node_text.Substring(0, 10).Trim());
+                string test = node_text.Substring(12, 10).Trim();
+                int father = int.Parse(node_text.Substring(12, 9).Trim());
+                var childsString = node_text.Substring(22, 30).Trim().Split(',').ToList<string>();
+
+                List<int> childs = new List<int>();
+                foreach (var item in childsString)
+                {
+                    childs.Add(int.Parse(item));
+                }
+                
+                //List<string> valuesString = new List<string>(Split(tempVal, FieldLength));
+                //List<string> valuesString = new List<string>();
+                //var valsTem = node_text.Substring(53).Replace('\0', ' ').TrimEnd();
+                //for (int i = 53; i < node_text.Length; i += FieldLength)
+                //{
+                //    valuesString.Add(valsTem.Substring(i, FieldLength).Trim());
+                //}
+
+                // tempVal = node_text.Substring(53).Replace("\n", " ").Replace("\0", " ").Trim();
+                List<T> valuesT = (List<T>)ConvertValues.DynamicInvoke(valuesString);
+
+                BNode <T> newNode = new BNode<T>(Grade);
+                newNode.Id = id;
+                newNode.Father = father;
+                newNode.Childs = childs;
+                newNode.Values = valuesT;
+
+                return newNode;
             }
-            var valuesString = node_text.Substring(73, 15).Trim().Split(',').ToList<string>();
-            List<T> valuesT = (List<T>)ConvertValues.DynamicInvoke(valuesString);
+            catch (Exception)
+            {
 
-            BNode <T> newNode = new BNode<T>(id, father, childs, valuesT);
+                return null;
+            }
+        }
+        static IEnumerable<string> Split(string str, int fieldlegth)
+        {
 
-            return newNode;
+            return Enumerable.Range(0, str.Length / fieldlegth).Select(i => str.Substring(i * fieldlegth, fieldlegth));
         }
     }
 }
