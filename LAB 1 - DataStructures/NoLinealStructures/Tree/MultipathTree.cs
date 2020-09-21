@@ -6,7 +6,7 @@ using System.Text.RegularExpressions;
 
 namespace LAB_1___DataStructures.NoLinealStructures.Tree
 {
-    public class MultipathTree<T> : Interfaces.ITreeDataStructure<T>
+    public class MultipathTree<T> 
     {
         private Node<T> Root { get; set; }
         public int Grade;
