@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Text;
 using LAB_1___DataStructures.NoLinealStructures.Tree;
 
@@ -108,7 +109,7 @@ namespace LAB_1___DataStructures.NoLinealStructures.Tree
                     currentList.Add(node.Values[i]);
                     if (node.Childs[i + 1] != -1)
                     {
-                        BNode<T> next_node = GetNode(node.Childs[i+1]);
+                        BNode<T> next_node = GetNode(node.Childs[i + 1]);
                         InOrden(next_node, currentList);
                     }
                 }
@@ -120,7 +121,7 @@ namespace LAB_1___DataStructures.NoLinealStructures.Tree
                     }
                     if (node.Childs[i + 1] != -1)
                     {
-                        BNode<T> next_node = GetNode(node.Childs[i+1]);
+                        BNode<T> next_node = GetNode(node.Childs[i + 1]);
                         InOrden(next_node, currentList);
                     }
                 }
@@ -144,7 +145,7 @@ namespace LAB_1___DataStructures.NoLinealStructures.Tree
         }
 
         private void PostOrden(BNode<T> node, List<T> currentList)
-        {            
+        {
             for (int j = 0; j <= (Grade - 1); j++)
             {
                 if (node.Childs[j] != -1)

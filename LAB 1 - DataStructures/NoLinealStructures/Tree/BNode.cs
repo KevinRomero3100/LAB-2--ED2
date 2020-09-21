@@ -34,6 +34,5 @@ namespace LAB_1___DataStructures.NoLinealStructures.Tree
             childs = childs.Substring(0, childs.Length - 2);
             return $"{string.Format("{0,-20}", Id)}|  {string.Format("{0,-23}", Father)}|  {string.Format("{0,-23}", childs)}|";
         }
-
     }
 }

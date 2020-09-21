@@ -3,6 +3,12 @@ using System.Collections.Generic;
 using System.Text;
 using System.IO;
 using LAB_1___DataStructures.NoLinealStructures.Tree;
+using System.Data.SqlTypes;
+using System.Text.Json.Serialization;
+using System.Runtime.InteropServices;
+using System.Linq;
+using System.Xml.Serialization;
+using System.Text.Encodings.Web;
 
 namespace LAB_1___DataStructures
 {
@@ -80,15 +86,15 @@ namespace LAB_1___DataStructures
             }
 
             //////////////////////////////////////////////////////////////////
-            string values = node_text.Substring(73, ((Grade-1)*FieldLength));
+            string values = node_text.Substring(73, ((Grade - 1) * FieldLength));
             ////////////////////////////////////////////////////////////////////
 
             ///////////////////////////////////////////////////////////////////
             List<string> values_list = new List<string>();
-            for (int i = 0; i < ((Grade - 1) * FieldLength); i+= FieldLength)
+            for (int i = 0; i < ((Grade - 1) * FieldLength); i += FieldLength)
             {
                 string current_value = values.Substring(i, FieldLength);
-                if (current_value.Trim() != "") values_list.Add(current_value);     
+                if (current_value.Trim() != "") values_list.Add(current_value);
             }
             //////////////////////////////////////////////////////////////////////         
 
@@ -99,7 +105,7 @@ namespace LAB_1___DataStructures
             node.Id = id;
             node.Father = father;
             node.Values = valuesT;
-           
+
             return node;
         }
 
@@ -145,6 +151,5 @@ namespace LAB_1___DataStructures
             }
         }
         ///////////////////////////////////////////////////////////////////////
-
     }
 }

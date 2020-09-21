@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using LAB_1___DataStructures.NoLinealStructures.Tree;
 using LAB_1___DataStructures;
+using Microsoft.VisualBasic;
 
 namespace LAB_1___ConsoleApplication
 {
@@ -25,7 +26,7 @@ namespace LAB_1___ConsoleApplication
             FileManage<int> fm = new FileManage<int>();
             fm.Path = path;
             fm.FieldLength = longitud_campo;
-            fm.LineLength = 75 + ((grado-1)*longitud_campo);
+            fm.LineLength = 75 + ((grado - 1) * longitud_campo);
             fm.Path = path;
             fm.ValueConverter = ConvertNodetoT;
             fm.ValueDeconverter = ConvertTtoNode;
@@ -37,12 +38,12 @@ namespace LAB_1___ConsoleApplication
 
             //PREORDEN
             List<int> preorden = Tree.ToPreOrden();
-            string result1 ="";
+            string result1 = "";
             for (int i = 0; i < preorden.Count; i++)
             {
-                result1 += Convert.ToString(preorden[i])+" ,";
+                result1 += Convert.ToString(preorden[i]) + " ,";
             }
-            Console.WriteLine("\nPreOrden \n"+result1);
+            Console.WriteLine("\nPreOrden \n" + result1);
 
             //POSTORDEN
             List<int> postorden = Tree.ToPostOrden();
@@ -103,5 +104,7 @@ namespace LAB_1___ConsoleApplication
             }
             return Val;
         }
+
+
     }
 }
