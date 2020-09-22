@@ -18,10 +18,12 @@ namespace LAB_1___ConsoleApplication
             Console.WriteLine("\t\t\t- LAB 2 -\n\nKevin Romero 1047519\nJosé De León 1072619");
 
             //VARIABLES//////////////////////////////////////////////////////////////
-            string path = @"C:\Users\José De León\Desktop\lab\LAB-2--ED2\data.txt";
+            string path = @"C:\Users\José De León\Desktop\master\LAB-2--ED2\data.txt";
             int longitud_campo = 3;
             int grado = 5;
             /////////////////////////////////////////////////////////////////////////
+
+
 
             FileManage<int> fm = new FileManage<int>();
             fm.Path = path;
@@ -35,6 +37,26 @@ namespace LAB_1___ConsoleApplication
             Tree.Comparer = KeyComparison;
             Tree.Fm = fm;
             Tree.IniciateTree();
+
+            ///PRUEBAS
+            Tree.Insert(89);
+            Tree.Insert(1);
+            Tree.Insert(18);
+            Tree.Insert(49);
+            Tree.Insert(16);
+
+            //BNode<int> prueba = fm.CastNode(1);
+            //prueba.Id = 2;
+            //fm.WriteNode(prueba);
+            //BNode<int> confirmacion = fm.CastNode(2);
+            //BNode<int> nodetest = fm.CastNode(8);
+            //nodetest.Id = 13;
+            //nodetest.Father = 45;
+            //fm.WriteNode(nodetest);
+
+
+            ///
+
 
             //PREORDEN
             List<int> preorden = Tree.ToPreOrden();
@@ -63,12 +85,7 @@ namespace LAB_1___ConsoleApplication
             }
             Console.WriteLine("\nInOrden \n" + result3);
 
-            BNode<int> nodetest = fm.CastNode(8);
-            nodetest.Id = 13;
-            nodetest.Father = 45;
-
-
-            fm.WriteNode(nodetest);
+            
 
 
             Console.ReadLine();

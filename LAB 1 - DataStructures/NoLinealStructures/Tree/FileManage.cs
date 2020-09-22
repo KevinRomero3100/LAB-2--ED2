@@ -75,6 +75,13 @@ namespace LAB_1___DataStructures
 
             string node_text = Encoding.UTF8.GetString(buffer);
 
+            //REMIENDO
+            node_text = node_text.Substring(1, node_text.Length-1);
+            node_text = node_text.Replace("\0", " ");
+            node_text = node_text.Substring(0, (LineLength-2));
+
+            if (node_text.Substring(0, 20).Trim() == "") return null;
+
             int id = Convert.ToInt32(node_text.Substring(0, 20).Trim());
             int father = Convert.ToInt32(node_text.Substring(21, 25).Trim());
             string[] references = node_text.Substring(47, 25).Trim().Split(",");
@@ -116,7 +123,7 @@ namespace LAB_1___DataStructures
 
             string format = "{0,-" + (FieldLength * (Grade - 1)) + "}";
             str_node += $"{string.Format(format, node_values)}";
-            byte[] bytes = Encoding.UTF8.GetBytes(str_node);
+            byte[] bytes = Encoding.ASCII.GetBytes(str_node);
             int position = node.Id;
             byte newLine = 10;
 
@@ -139,6 +146,7 @@ namespace LAB_1___DataStructures
             str_node += $"{string.Format(format, node_values)}";
             byte[] byte_node = Encoding.UTF8.GetBytes(str_node);
             int position = node.Id;
+            
 
             using (var fs = new FileStream(Path, FileMode.OpenOrCreate))
             {
