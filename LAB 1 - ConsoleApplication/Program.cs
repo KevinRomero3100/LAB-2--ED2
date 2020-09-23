@@ -17,8 +17,9 @@ namespace LAB_1___ConsoleApplication
         {
             Console.WriteLine("\t\t\t- LAB 2 -\n\nKevin Romero 1047519\nJosé De León 1072619");
 
+
             //VARIABLES//////////////////////////////////////////////////////////////
-            string path = @"C:\Users\José De León\Desktop\master\LAB-2--ED2\data.txt";
+            string path = @"C:\Users\kevin\OneDrive\Documentos\GitHub\LAB-2--ED2\data.txt";
             int longitud_campo = 3;
             int grado = 5;
             /////////////////////////////////////////////////////////////////////////
