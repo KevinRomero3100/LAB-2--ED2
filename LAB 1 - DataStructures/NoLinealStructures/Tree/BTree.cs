@@ -1,13 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.ComponentModel.DataAnnotations;
-using System.Globalization;
-using System.Reflection;
-using System.Security;
-using System.Security.Cryptography;
-using System.Text;
-using LAB_1___DataStructures.NoLinealStructures.Tree;
 
 namespace LAB_1___DataStructures.NoLinealStructures.Tree
 {
@@ -30,23 +22,10 @@ namespace LAB_1___DataStructures.NoLinealStructures.Tree
             Fm.Grade = meta_data[2];
         }
 
-        private BNode<T> GetNode(int position)
-        {
-            BNode<T> node = Fm.CastNode(position);
-            if (node == null) node = new BNode<T>(Grade);
-
-            return node;
-        }
-
-        private void UpdateTree(int root, int next_id)
-        {
-            Root = root;
-            Fm.UpdateProperties(root, next_id);
-        }
 
         public void Insert(T value)
         {
-            if(Root == 0)
+            if (Root == 0)
             {
                 BNode<T> node = new BNode<T>(Grade)
                 {
@@ -71,7 +50,7 @@ namespace LAB_1___DataStructures.NoLinealStructures.Tree
                         return;
                     }
                     else
-                    Fm.WriteNode(root);
+                        Fm.WriteNode(root);
                     return;
                 }
             }
@@ -80,8 +59,54 @@ namespace LAB_1___DataStructures.NoLinealStructures.Tree
                 Insert(root, value, 0);
                 root = GetNode(root.Id);
                 if (IsOverFlow(root)) SplitParent(root);
-            }         
+            }
         }
+
+        private void Insert(BNode<T> root, T value, int pos)
+        {
+            if (IsLeaf(root))
+            {
+                if (!ExistInLeaf(root,value))
+                {
+                    IncertarEnHoja(root, value);
+                    return;
+                }
+                return;
+            }
+            else if ((int)Comparer.DynamicInvoke(value, root.Values[pos]) == -1)
+            {
+                //incerto un hijo ala isquierda
+                BNode<T> newRoot;
+                newRoot = GetNode(root.Childs[pos]);
+                Insert(newRoot, value, 0);
+                newRoot = GetNode(root.Id);//leo de nuevo la roote para saber si existienron cambios
+                if (IsOverFlow(newRoot)) SplitParent(newRoot);// si la root tubo cambios( y regreso onverfow divide esta root    
+            }
+            else if ((int)Comparer.DynamicInvoke(value, root.Values[pos]) == 1)
+            {
+                pos++;
+                if (pos < root.Values.Count)
+                {
+                    Insert(root, value, pos);
+
+                }
+                else //incerta en el hijo mas ala derecha
+                {
+                    BNode<T> newRoot;
+                    newRoot = GetNode(root.Childs[pos]);
+                    Insert(newRoot, value, 0);
+
+                    newRoot = GetNode(root.Id);
+                    if (IsOverFlow(newRoot)) SplitParent(newRoot);
+                }
+            }
+            else
+            {
+                return;
+            }
+        }
+
+        #region Balanceos
         private void SplitParent(BNode<T> parentToSplit)
         {
 
@@ -96,7 +121,13 @@ namespace LAB_1___DataStructures.NoLinealStructures.Tree
                 parent = new BNode<T>(Grade) { Father = -1, Id = SetNextId() };
                 newParent.Father = parent.Id;
                 newParent.Id = SetNextId();
+                UpdateTree(parent.Id, Next_Id);
                 parentToSplit.Father = parent.Id;
+                
+                newParent.Childs.Add(-1);
+
+                parent.Childs.RemoveAt(0);
+                parent.Childs.Insert(0, parentToSplit.Id);
 
                 parent.Values.Add(middleValue);
                 SortNode(parent);
@@ -108,31 +139,48 @@ namespace LAB_1___DataStructures.NoLinealStructures.Tree
                 newParent.Father = parentToSplit.Father;
                 newParent.Id = SetNextId();
 
+                newParent.Childs.Add(-1);
+
                 parent.Values.Add(middleValue);
                 SortNode(parent);
             }
+
             //Extraer valores mayores del nodo y los agrega ala nueva hoja
-            for (int i = middleValPos + 1; i < parentToSplit.Values.Count; i++)
+            for (int i = (middleValPos + 1); i < parentToSplit.Values.Count; i++)
             {
                 newParent.Values.Add(parentToSplit.Values[i]);
             }
             // Quita los valores desde la mitad hasta el ultimo mayor
-            while ((middleValPos - 1) != (parentToSplit.Values.Count))
-            {
-                parentToSplit.Values.RemoveAt(middleValPos);
-            }
-            // pasa  los hijos desde la mitad hasta el ultimo
-            for (int i = middleValPos; i < parentToSplit.Values.Count; i++)
-            {
-                newParent.Childs.Add(parentToSplit.Childs[i]);
-            }
-            // borra los hijos desde la mitad hasta el ultimo
             while (middleValPos != parentToSplit.Values.Count)
             {
                 parentToSplit.Values.RemoveAt(middleValPos);
             }
+            // pasa  los hijos desde la mitad hasta el ultimo
+            for (int i = 0; i < parentToSplit.Childs.Count; i++)
+            {
+                newParent.Childs.RemoveAt(i);
+                newParent.Childs.Insert(i, parentToSplit.Childs[middleValPos + 1]);
+                parentToSplit.Childs.RemoveAt(middleValPos + 1);
+                parentToSplit.Childs.Add(-1);
+            }
+            BNode<T> tempNode;
+
+            foreach (var item in newParent.Childs)
+            {
+                if (item != -1)
+                {
+                    tempNode = GetNode(item);
+                    tempNode.Father = newParent.Id;
+                    removeChild(tempNode);
+                    Fm.WriteNode(tempNode);
+                }
+            }
 
             SortChilds(parent, newParent.Id, middleValue);
+
+            removeChild(parentToSplit);
+            removeChild(parent);
+            removeChild(newParent);
 
             Fm.WriteNode(parentToSplit);
             Fm.WriteNode(parent);
@@ -163,7 +211,7 @@ namespace LAB_1___DataStructures.NoLinealStructures.Tree
                     newLeaf.Values.Add(leaf.Values[i]);
                 }
                 // Quita los valores desde la mitad hasta el ultimo mayor
-                while ((middleValPos-1) != (leaf.Values.Count))
+                while (middleValPos != leaf.Values.Count)
                 {
                     leaf.Values.RemoveAt(middleValPos);
                 }
@@ -175,105 +223,41 @@ namespace LAB_1___DataStructures.NoLinealStructures.Tree
                 SortNode(newLeaf);
 
                 SortChilds(parent, newLeaf.Id, middleValue);
+
+                removeChild(parent);
+                removeChild(leaf);
+                removeChild(newLeaf);
+
                 Fm.WriteNode(parent);
                 Fm.WriteNode(leaf);
                 Fm.WriteNode(newLeaf);
             }
-            else Fm.WriteNode(leaf); 
-
-        }
-        private void Insert(BNode<T> root, T value, int pos)
-        {
-            if (IsLeaf(root))
-            {
-                IncertarEnHoja(root, value);
-                return;
-            }
-            else if((int)Comparer.DynamicInvoke(root.Values[pos], value) == -1)
-            {
-                //incerto un hijo ala isquierda
-                BNode<T> newRoot;
-                newRoot = GetNode(root.Childs[pos]);
-                Insert(newRoot, value, pos);
-                newRoot = GetNode(root.Id);//leo de nuevo la roote para saber si existienron cambios
-                if (IsOverFlow(newRoot)) SplitParent(newRoot);// si la root tubo cambios( y regreso onverfow divide esta root    
-            }
-            else if((int)Comparer.DynamicInvoke(root.Values[pos], value) == 1)
-            {
-                pos++;
-                if (pos < root.Values.Count)
-                {
-                    Insert(root, value, pos);
-
-                }
-                else //incerta en el hijo mas ala derecha
-                {
-                    BNode<T> newRoot ;
-                    newRoot = GetNode(root.Childs[pos]);
-                    Insert(newRoot, value, 0);
-                    newRoot = GetNode(root.Id);
-                    if (IsOverFlow(newRoot)) SplitParent(newRoot);
-                }
-            }
             else
             {
-                // el valor es igual
+                removeChild(leaf);
+                Fm.WriteNode(leaf);
             }
-        }
 
-        void SimpleSplitRoot(BNode<T> node)
+        }
+        #endregion 
+
+        #region Auxiliares
+        bool ExistInLeaf(BNode<T> leaf, T value)
         {
-            if(Grade%2 != 0)
+            foreach (var item in leaf.Values)
             {
-                int position = (Grade - 1) / 2;
-
-                BNode<T> new_father = new BNode<T>(Grade) { Id = SetNextId(), Father = -1};
-                T mid_value = node.Values[position];
-                new_father.Values.Add(mid_value);
-
-                BNode<T> right_node = new BNode<T>(Grade) { Id = SetNextId(), Father = new_father.Id};
-
-                node.Values.RemoveAt(position);
-                for (int i = 0; i < position; i++)
-                {
-                    right_node.Values.Add(node.Values[position]);
-                    node.Values.RemoveAt(position);
-                }
-
-                new_father.Childs[0] = node.Id;
-                new_father.Childs[1] = right_node.Id;
-
-                UpdateTree(new_father.Id, Next_Id);
-                Fm.WriteNode(node);
-                Fm.WriteNode(new_father);
-                Fm.WriteNode(right_node);
-
-                return;
+                if ((int)Comparer.DynamicInvoke(value, item) == 0)
+                    return true;
             }
-            else
+            return false;
+        }
+        void removeChild (BNode<T> node)
+        {
+            if (node.Childs.Count > Grade && node.Childs[Grade] == -1)
             {
-                int position = (Grade - 1) / 2;
-
-                BNode<T> new_father = new BNode<T>(Grade) { Id = SetNextId(), Father = -1 };
-                T mid_value = node.Values[position];
-                new_father.Values.Add(mid_value);
-
-                BNode<T> right_node = new BNode<T>(Grade) { Id = SetNextId(), Father = new_father.Id };
-
-                node.Values.RemoveAt(position);
-                for (int i = position; i < position+1; i++)
-                {
-                    right_node.Values.Add(node.Values[i + 1]);
-                    node.Values.RemoveAt(i);
-                }
-
-                new_father.Childs[0] = node.Id;
-                new_father.Childs[1] = right_node.Id;
-               
-                return;
+                node.Childs.RemoveAt(Grade);
             }
         }
-
         int SetNextId()
         {
             Next_Id++;
@@ -284,34 +268,34 @@ namespace LAB_1___DataStructures.NoLinealStructures.Tree
             if (node.Values.Count == Grade) return true;
             return false;
         }
-        private void SortChilds(BNode<T> Parent , int IdChild ,T value)
+        private void SortChilds(BNode<T> Parent, int IdChild, T value)
         {
             List<int> chilsSorted = new List<int>();
-            int count = 0;
+            var posVal = PositionValue(Parent, value);
+
+            Parent.Childs.Insert(posVal , IdChild);
+            if (Parent.Childs.Count == (Grade + 2))
+            {
+                Parent.Childs.RemoveAt(Grade+1);
+            }
+        }
+
+        private int PositionValue(BNode<T> Parent, T value)
+        {
+            var count = 0;
             foreach (var item in Parent.Values)
             {
                 if ((int)Comparer.DynamicInvoke(value, item) == 0)
                 {
-
-                    chilsSorted.Add(Parent.Childs[count]);
                     count++;
-                    chilsSorted.Add(IdChild);
-                    count++;
+                    return count;
                 }
-                else
-                {
-                    chilsSorted.Add(Parent.Childs[count]);
-                    count++;
-                }
+                count++;
             }
-            while (Parent.Childs.Count != chilsSorted.Count)
-            {
-                chilsSorted.Add(-1);
-            }
-            Parent.Childs = chilsSorted;
-            
+            return count;
         }
-       
+
+
         bool IsLeaf(BNode<T> node)
         {
             for (int i = 0; i < node.Childs.Count; i++)
@@ -320,6 +304,19 @@ namespace LAB_1___DataStructures.NoLinealStructures.Tree
             }
             return true;
         }
+        private BNode<T> GetNode(int position)
+        {
+            BNode<T> node = Fm.CastNode(position);
+            if (node == null) node = new BNode<T>(Grade);
+
+            return node;
+        }
+        private void UpdateTree(int root, int next_id)
+        {
+            Root = root;
+            Fm.UpdateProperties(root, next_id);
+        }
+        #endregion
         private BNode<T> SortNode(BNode<T> node)
         {
             int length = node.Values.Count;
@@ -337,7 +334,7 @@ namespace LAB_1___DataStructures.NoLinealStructures.Tree
             }
             return node;
         }
-
+        #region Funcionando
         public void Delete()
         {
             throw new NotImplementedException();
@@ -462,6 +459,7 @@ namespace LAB_1___DataStructures.NoLinealStructures.Tree
                 currentList.Add(value[i]);
             }
         }
+        #endregion
     }
 
 }

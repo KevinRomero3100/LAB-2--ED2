@@ -14,7 +14,7 @@ namespace LAB_1___DataStructures
 {
     public class FileManage<T>
     {
-        public int MetaDataLength => 115;
+        public int MetaDataLength => 125;
         public int FieldLength { get; set; }
         public int LineLength { get; set; }
         public int Grade { get; set; }
@@ -37,8 +37,8 @@ namespace LAB_1___DataStructures
         }
         public void UpdateProperties(int root, int next_id)
         {
-            string w_root = $"root:{string.Format("{0,3}", root)}";
-            string w_id = $"next_id:{string.Format("{0,3}", next_id)}";
+            string w_root = $"root:    {string.Format("{0, -3}", root)}";
+            string w_id =   $"next_id:{string.Format("{0, -3}", next_id)}";
             byte[] line_one = Encoding.UTF8.GetBytes(w_root);
             using (var fs = new FileStream(Path, FileMode.OpenOrCreate))
             {
@@ -48,7 +48,7 @@ namespace LAB_1___DataStructures
             byte[] line_two = Encoding.UTF8.GetBytes(w_id);
             using (var fs = new FileStream(Path, FileMode.OpenOrCreate))
             {
-                fs.Seek(9, SeekOrigin.Begin);
+                fs.Seek(14, SeekOrigin.Begin);
                 fs.Write(line_two, 0, w_id.Length);
             }
         }
@@ -93,12 +93,13 @@ namespace LAB_1___DataStructures
             }
 
             //////////////////////////////////////////////////////////////////
-            string values = node_text.Substring(73, ((Grade - 1) * FieldLength));
+            string values = node_text.Substring(73, ((Grade) * FieldLength));
             ////////////////////////////////////////////////////////////////////
 
             ///////////////////////////////////////////////////////////////////
             List<string> values_list = new List<string>();
-            for (int i = 0; i < ((Grade - 1) * FieldLength); i += FieldLength)
+
+            for (int i = 0; i < ((Grade) * FieldLength); i += FieldLength)
             {
                 string current_value = values.Substring(i, FieldLength);
                 if (current_value.Trim() != "") values_list.Add(current_value);
@@ -121,7 +122,7 @@ namespace LAB_1___DataStructures
             string str_node = node.ToString();
             string node_values = (string)ValueDeconverter.DynamicInvoke(node.Values, FieldLength);
 
-            string format = "{0,-" + (FieldLength * (Grade - 1)) + "}";
+            string format = "{0,-" + (FieldLength * Grade) + "}";
             str_node += $"{string.Format(format, node_values)}";
             byte[] bytes = Encoding.ASCII.GetBytes(str_node);
             int position = node.Id;

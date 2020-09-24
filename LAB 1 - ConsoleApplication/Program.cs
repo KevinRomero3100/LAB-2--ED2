@@ -20,8 +20,8 @@ namespace LAB_1___ConsoleApplication
 
             //VARIABLES//////////////////////////////////////////////////////////////
             string path = @"C:\Users\kevin\OneDrive\Documentos\GitHub\LAB-2--ED2\data.txt";
-            int longitud_campo = 3;
-            int grado = 5;
+            int longitud_campo = 4;
+            int grado = 6;
             /////////////////////////////////////////////////////////////////////////
 
 
@@ -29,7 +29,7 @@ namespace LAB_1___ConsoleApplication
             FileManage<int> fm = new FileManage<int>();
             fm.Path = path;
             fm.FieldLength = longitud_campo;
-            fm.LineLength = 75 + ((grado - 1) * longitud_campo);
+            fm.LineLength = 75 + ((grado) * longitud_campo);
             fm.Path = path;
             fm.ValueConverter = ConvertNodetoT;
             fm.ValueDeconverter = ConvertTtoNode;
@@ -40,11 +40,49 @@ namespace LAB_1___ConsoleApplication
             Tree.IniciateTree();
 
             ///PRUEBAS
-            Tree.Insert(89);
-            Tree.Insert(1);
-            Tree.Insert(18);
+
+            Tree.Insert(15);
+            Tree.Insert(84);
+            Tree.Insert(69);
+            Tree.Insert(34);
+            Tree.Insert(90);
+            Tree.Insert(72);
+            Tree.Insert(24);
+            Tree.Insert(100);
             Tree.Insert(49);
+            Tree.Insert(71);
+            Tree.Insert(52);
+            Tree.Insert(65);
+            Tree.Insert(87);
+            Tree.Insert(82);
+            Tree.Insert(84);
+            Tree.Insert(100);
+            Tree.Insert(76);
+            Tree.Insert(41);
+            Tree.Insert(75);
+            Tree.Insert(18);
+            Tree.Insert(50);
+            Tree.Insert(84);
+            Tree.Insert(29);
+            Tree.Insert(24);
+            Tree.Insert(76);
+            Tree.Insert(39);
+            Tree.Insert(13);
+            Tree.Insert(56);
+            Tree.Insert(8);
+            Tree.Insert(62);
+            Tree.Insert(75);
+            Tree.Insert(60);
+            Tree.Insert(53);
+            Tree.Insert(38);
+            Tree.Insert(41);
+            Tree.Insert(36);
+            Tree.Insert(33);
+            Tree.Insert(43);
+            Tree.Insert(4);
             Tree.Insert(16);
+
+
 
             //BNode<int> prueba = fm.CastNode(1);
             //prueba.Id = 2;
@@ -102,14 +140,21 @@ namespace LAB_1___ConsoleApplication
         static List<int> ConvertToInteger(List<string> values)
         {
             List<int> values_list = new List<int>();
-            foreach (var item in values)
+            try
             {
-                if (int.Parse(item) != 0)
+                foreach (var item in values)
                 {
-                    values_list.Add(int.Parse(item));
+                    if (int.Parse(item) != 0)
+                    {
+                        values_list.Add(int.Parse(item));
+                    }
                 }
+                return values_list;
             }
-            return values_list;
+            catch (Exception)
+            {
+                return values_list;
+            }
         }
 
         static string ConvertToString(List<int> values, int lend)
