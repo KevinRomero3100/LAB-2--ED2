@@ -55,11 +55,11 @@ namespace LAB_1___DataStructures
 
         public void UpdateGrade(int grade)
         {
-            string w_grade = $"grade:{string.Format("{0,2}", grade)}";
+            string w_grade = $"grade:  {string.Format("{0,-5}", grade)}";
             byte[] line_three = Encoding.UTF8.GetBytes(w_grade);
             using (var fs = new FileStream(Path, FileMode.OpenOrCreate))
             {
-                fs.Seek(21, SeekOrigin.Begin);
+                fs.Seek(28, SeekOrigin.Begin);
                 fs.Write(line_three, 0, w_grade.Length);
             }
         }
@@ -136,29 +136,25 @@ namespace LAB_1___DataStructures
             }
         }
 
-
-        ///EXPERIMENTO ///////////////////////////////////////////////////////
-        public void Experimental_WriteNode(BNode<T> node)
+        public void WriteEmpty(int position)
         {
-            string str_node = node.ToString();
-            string node_values = (string)ValueDeconverter.DynamicInvoke(node.Values, FieldLength);
-
-            string format = "{0,-" + ((Grade - 1) * FieldLength) + "}";
-            str_node += $"{string.Format(format, node_values)}";
-            byte[] byte_node = Encoding.UTF8.GetBytes(str_node);
-            int position = node.Id;
-            
-
             using (var fs = new FileStream(Path, FileMode.OpenOrCreate))
             {
-                fs.Seek((position - 1) * LineLength + MetaDataLength, SeekOrigin.Begin);
-                for (int i = 0; i < byte_node.Length; i++)
-                {
-                    fs.WriteByte(byte_node[i]);
-                }
 
             }
         }
-        ///////////////////////////////////////////////////////////////////////
+
+        public void DeleteFile()
+        {
+            string texto = "root:   0    \n" +
+                           "next_id:1    \n" +
+                           "grade:  0    \n" +
+                           "\n" +
+                           "id                  | father                  | childs                  | values \n";
+
+            using var writer = new StreamWriter(Path, false);
+            writer.Write(texto);
+        }
+
     }
 }

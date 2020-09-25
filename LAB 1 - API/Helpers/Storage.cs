@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using LAB_1___DataStructures;
+using LAB_1___DataStructures.NoLinealStructures.Tree;
 
 namespace LAB_1___API.Helpers
 {
@@ -17,7 +19,8 @@ namespace LAB_1___API.Helpers
                 return _instance;
             }
         }
-        public LAB_1___DataStructures.NoLinealStructures.Tree.MultipathTree<Movie> MoviesTree = new LAB_1___DataStructures.NoLinealStructures.Tree.MultipathTree<Movie>();
+        public BTree<Movie> BTree = new BTree<Movie>();
+        public FileManage<Movie> Fm = new FileManage<Movie>();
      
     }  
 }

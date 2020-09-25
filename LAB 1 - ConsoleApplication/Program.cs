@@ -19,18 +19,17 @@ namespace LAB_1___ConsoleApplication
 
 
             //VARIABLES//////////////////////////////////////////////////////////////
-            string path = @"C:\Users\kevin\OneDrive\Documentos\GitHub\LAB-2--ED2\data.txt";
             int longitud_campo = 4;
             int grado = 6;
             /////////////////////////////////////////////////////////////////////////
 
-
+            string fileName = "data.txt";
+            string fullPath = Path.GetFullPath(fileName);
 
             FileManage<int> fm = new FileManage<int>();
-            fm.Path = path;
+            fm.Path = fullPath;
             fm.FieldLength = longitud_campo;
             fm.LineLength = 75 + ((grado) * longitud_campo);
-            fm.Path = path;
             fm.ValueConverter = ConvertNodetoT;
             fm.ValueDeconverter = ConvertTtoNode;
 
@@ -98,35 +97,33 @@ namespace LAB_1___ConsoleApplication
 
 
             //PREORDEN
-            List<int> preorden = Tree.ToPreOrden();
+            List<int> result = Tree.ToPreOrden();
             string result1 = "";
-            for (int i = 0; i < preorden.Count; i++)
+            for (int i = 0; i < result.Count; i++)
             {
-                result1 += Convert.ToString(preorden[i]) + " ,";
+                result1 += Convert.ToString(result[i]) + " ,";
             }
             Console.WriteLine("\nPreOrden \n" + result1);
 
             //POSTORDEN
-            List<int> postorden = Tree.ToPostOrden();
+            result = Tree.ToPostOrden();
             string result2 = "";
-            for (int i = 0; i < postorden.Count; i++)
+            for (int i = 0; i < result.Count; i++)
             {
-                result2 += Convert.ToString(postorden[i]) + " ,";
+                result2 += Convert.ToString(result[i]) + " ,";
             }
             Console.WriteLine("\nPostOrden \n" + result2);
 
             //INORDEN
-            List<int> inorden = Tree.ToInOrden();
+            result = Tree.ToInOrden();
             string result3 = "";
-            for (int i = 0; i < inorden.Count; i++)
+            for (int i = 0; i < result.Count; i++)
             {
-                result3 += Convert.ToString(inorden[i]) + " ,";
+                result3 += Convert.ToString(result[i]) + " ,";
             }
             Console.WriteLine("\nInOrden \n" + result3);
 
             
-
-
             Console.ReadLine();
         }
 

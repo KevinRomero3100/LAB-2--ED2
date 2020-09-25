@@ -8,6 +8,7 @@ using System.Text.Json;
 using System.IO;
 using Microsoft.AspNetCore.Http;
 using System.Text;
+using Microsoft.AspNetCore.Hosting;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -17,11 +18,16 @@ namespace LAB_1___API.Controllers
     [ApiController]
     public class MoviesController : ControllerBase
     {
+        private IWebHostEnvironment environment;
+        public MoviesController(IWebHostEnvironment env)
+        {
+            environment = env;
+        }
 
         [HttpGet]
         public string Get()
         {
-            string text = "\t\t\t- LAB 1 -\n\nKevin Romero 1047519\nJosé De León 1072619\n\nPOST- /api/movies\n\t{\"order\" : 5}\n\nPOST- /api/movies/populate\n\tAdd test1.json in form-data with postman\n\nGET-    /api/movies/inorden\n\t/api/movies/preorden\n\t/api/movies/postorden";
+            string text = "\t\t\t- LAB 2 -\n\nKevin Romero 1047519\nJosé De León 1072619\n\nPOST- /api/movies\n\t{\"order\" : 5}\n\nPOST- /api/movies/populate\n\tAdd test1.json or test2.json in form-data with postman\n\nGET-    /api/movies/inorden\n\t/api/movies/preorden\n\t/api/movies/postorden\n\nDELETE-    /api/movies/{id}\n\tAdd the id in Title-RealeseDate format to delete in the B Tree\n\nDELETE-    /api/movies\n\tThis request delete all content of the B Tree in disk";
             return text;
         }
 
@@ -30,18 +36,17 @@ namespace LAB_1___API.Controllers
         {
             try
             {
-                if (Storage.Instance.MoviesTree.Count == 0) return null;
                 if (traversal == "inorden")
                 {
-                    return Storage.Instance.MoviesTree.ToInOrden();
+                    return Storage.Instance.BTree.ToInOrden();
                 }
                 if (traversal == "preorden")
                 {
-                    return Storage.Instance.MoviesTree.ToPreOrden();
+                    return Storage.Instance.BTree.ToPreOrden();
                 }
                 if (traversal == "postorden")
                 {
-                    return Storage.Instance.MoviesTree.ToPostOrden();
+                    return Storage.Instance.BTree.ToPostOrden();
                 }
                 return null;
             }
@@ -59,8 +64,13 @@ namespace LAB_1___API.Controllers
             {
                 JsonElement jsonprop = jsonobj.GetProperty("order");
                 int grade = jsonprop.GetInt32();
-                if (grade < 2) return StatusCode(500);
-                Movie.IniciateTree(grade);
+                if (grade < 3) return StatusCode(500);
+                string path = environment.ContentRootPath + $"\\data.txt";
+
+                //VARIABLES////////////////////////////////////
+                Movie.IniciateTree(path, 220, grade);
+                ///////////////////////////////////////////////
+                
                 return Ok();
             }
             catch (Exception)
@@ -85,11 +95,14 @@ namespace LAB_1___API.Controllers
                     movies_list = JsonSerializer.Deserialize<List<Movie>>(json_text, name_rule);
                 }
 
-                if (movies_list != null && Storage.Instance.MoviesTree.Grade != 0)
+                if (movies_list != null && Storage.Instance.BTree.Grade != 0)
                 {
                     for (int i = 0; i < movies_list.Count; i++)
                     {
-                        Storage.Instance.MoviesTree.Insert(movies_list[i]);
+                        Movie current_movie = movies_list[i];
+                        current_movie.Id = current_movie.Title + "-" + Convert.ToDateTime(current_movie.ReleaseDate).Year;
+
+                        Storage.Instance.BTree.Insert(current_movie);
                     }
                     return Ok();
                 }
@@ -102,5 +115,43 @@ namespace LAB_1___API.Controllers
 
         }
 
-    }
+        [HttpDelete]
+        public ActionResult DeleteTreeOnDisk()
+        {
+            try
+            {
+                Storage.Instance.Fm.Path = environment.ContentRootPath + $"\\data.txt";
+                Storage.Instance.Fm.DeleteFile();
+                return Ok();
+            }
+            catch (Exception)
+            {
+                return NotFound();
+            }
+        }
+
+        [HttpDelete("populate/{id}")]
+        public ActionResult DeleteElement(string id)
+        {
+            try
+            {
+                //if (Storage.Instance.BTree.Exist(id))
+                //{
+                //    Storage.Instance.BTree.Delete(id);
+                //    return Ok();
+                //}
+                //else
+                //{
+                    return NotFound();
+                //}
+            }
+            catch (Exception)
+            {
+                return StatusCode(500);
+            }
+        }
+
+
+
+     }
 }
