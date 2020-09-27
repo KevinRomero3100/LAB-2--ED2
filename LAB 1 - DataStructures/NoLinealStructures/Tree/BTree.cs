@@ -1,5 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+<<<<<<< HEAD
+=======
+using System.Dynamic;
+using System.Globalization;
+using System.Runtime.CompilerServices;
+using System.Runtime.Intrinsics.X86;
+using System.Xml;
+>>>>>>> TreeDeleteMethod
 
 namespace LAB_1___DataStructures.NoLinealStructures.Tree
 {
@@ -22,7 +30,306 @@ namespace LAB_1___DataStructures.NoLinealStructures.Tree
             Fm.Grade = meta_data[2];
         }
 
+<<<<<<< HEAD
 
+=======
+        public void Delete(T value)
+        {
+            BNode<T> root = GetNode(Root);
+            if (IsLeaf(root))
+            {
+                if (root.Values.Contains(value))
+                {
+                    var posValues = root.Values.IndexOf(value);
+                    root.Values.RemoveAt(posValues);
+                    Fm.WriteNode(root);
+                    return;
+                }
+                return;
+            }
+            else
+            {
+                Delete(root, value, 0, 0);
+                root = GetNode(root.Id);
+                if (IsUnderflow(root)) Balance(root);
+            }
+        }
+
+        public void Delete( BNode<T> root,T value, int pos, int idParent)
+        {
+
+            if (root.Values.Contains(value))
+            {
+                var posValues = root.Values.IndexOf(value);
+                if (IsLeaf(root))
+                {
+                    root.Values.RemoveAt(posValues);
+                    if (IsUnderflow(root)) Balance(root);
+                    else Fm.WriteNode(root);
+                    return;
+                }
+                else
+                {
+                    var newRoot = GetNode(root.Childs[posValues]);
+                    Delete(newRoot, value, 0, root.Id);
+
+                    newRoot = GetNode(root.Id);
+                    if (IsUnderflow(newRoot)) Balance(newRoot);
+                    return;
+                }
+            }
+            else if (!IsLeaf(root))
+            {
+                if ((int)Comparer.DynamicInvoke(value, root.Values[pos]) == -1)
+                {
+                    BNode<T> newRoot;
+                    newRoot = GetNode(root.Childs[pos]);
+                    Delete(newRoot, value, 0, idParent);
+
+                    newRoot = GetNode(root.Id);
+                    if (IsUnderflow(newRoot)) Balance(newRoot); 
+                }
+                else if ((int)Comparer.DynamicInvoke(value, root.Values[pos]) == 1)
+                {
+                    pos++;
+                    if (pos < root.Values.Count)
+                    {
+                        Delete(root, value, pos, idParent);
+                    }
+                    else 
+                    {
+                        BNode<T> newRoot;
+                        newRoot = GetNode(root.Childs[pos]);
+                        Delete(newRoot, value, 0, idParent);
+
+                        newRoot = GetNode(root.Id);
+                        if (IsUnderflow(newRoot)) Balance(newRoot);
+                    }
+                }
+                return;
+            }
+            else
+            {
+                if ((int)Comparer.DynamicInvoke(value, root.Values[root.Values.Count-1]) == 1)
+                {
+                    var valueSuplit = root.Values[root.Values.Count - 1];//obtengo ultimo valor
+                    root.Values.Remove(valueSuplit);//quito de la hoja
+                    var changeInParent = GetNode(idParent);//llamo al padre donde sustituire
+                    var posDel = changeInParent.Values.IndexOf(value);//index del valor eliminado
+                    changeInParent.Values.RemoveAt(posDel);//elimino de la raiz sonde se quedo contenido
+                    changeInParent.Values.Insert(posDel, valueSuplit);//incerto el valor en la raiz donde lo encontre
+                    Fm.WriteNode(changeInParent);
+
+                    if (IsUnderflow(root))
+                    {
+                        root.Father = changeInParent.Id;
+                        Balance(root);
+                    };
+
+                    return;
+                }
+                return; //caso en el que no se encontro el valor eliminado
+            }
+            
+        }
+        #region Unir Nodos
+        void PutTogether(BNode<T> parent, BNode<T> reciveNode, BNode<T> addNode, int indexCommoRoot)
+        {
+            var commonRoot = parent.Values[indexCommoRoot];
+            reciveNode.Values.Add(commonRoot);
+            AddValues(reciveNode, addNode);
+            int saveId = addNode.Id;
+            
+
+            if (addNode.Values.Count == 0)
+            {
+                if (!IsLeaf(addNode))
+                    AddChids(reciveNode, addNode);
+            }
+            else if (!IsLeaf(addNode))
+                AddChids(reciveNode, addNode);
+
+            parent.Childs.Remove(addNode.Id);
+            parent.Childs.Add(-1);
+            parent.Values.RemoveAt(indexCommoRoot);
+
+            addNode = new BNode<T>(Grade) { Father = -2, Id = saveId };
+
+            Fm.WriteNode(parent);
+            Fm.WriteNode(reciveNode); //nodo modificado con raiz en comun y resto de hojos
+            Fm.WriteNode(addNode); //nodo eliminado
+
+        }
+
+        void AddValues(BNode<T> reciveNode, BNode<T> addNode)
+        {
+            foreach (var item in addNode.Values)
+            {
+                reciveNode.Values.Add(item);
+            }
+            
+        }
+        void AddChids(BNode<T> reciveNode, BNode<T> addNode)
+        {
+            var index = reciveNode.Childs.IndexOf(-1);
+            for (int i = 0; i < addNode.Childs.Count; i++)
+            {
+                var item = addNode.Childs[0];
+                if (item != -1)
+                {
+                    reciveNode.Childs.Insert(index,item);
+                    addNode.Childs.Remove(item);
+                    addNode.Childs.Add(-1);
+                    reciveNode.Childs.Remove(-1);
+                    index++;
+                }
+                
+            }
+        }
+        #endregion
+        public void Balance(BNode<T> nodeDef)
+        {
+            var parent = GetNode(nodeDef.Father);
+            var indexChild = parent.Childs.IndexOf(nodeDef.Id);
+            var whereHaveBrothers = WhereHaveBrothers(parent, indexChild);
+            if (whereHaveBrothers == 0)
+            {
+                var rhigthBrother = GetNode(parent.Childs[indexChild + 1]);
+                var leftBrother = GetNode(parent.Childs[indexChild - 1]);
+                if (rhigthBrother.Values.Count > leftBrother.Values.Count)
+                    GetRight(parent, rhigthBrother, nodeDef, parent.Values.IndexOf(parent.Values[indexChild]));
+                else if (leftBrother.Values.Count > rhigthBrother.Values.Count) 
+                    GetLeft(parent,leftBrother, nodeDef, parent.Values.IndexOf(parent.Values[indexChild - 1]));
+                else
+                {
+                    if (CanLend(leftBrother))
+                        GetLeft(parent, leftBrother, nodeDef, parent.Values.IndexOf(parent.Values[indexChild - 1]));
+                    else
+                        PutTogether(parent, leftBrother, nodeDef, parent.Values.IndexOf(parent.Values[indexChild-1]));
+                }
+            }
+            else
+            {
+                if (whereHaveBrothers == 1)
+                {
+                    var rhigthBrother = GetNode(parent.Childs[indexChild + 1]);
+                    if (CanLend(rhigthBrother))
+                        GetRight(parent, rhigthBrother, nodeDef, parent.Values.IndexOf(parent.Values[indexChild]));
+                    else
+                        PutTogether(parent, nodeDef, rhigthBrother, parent.Values.IndexOf(parent.Values[indexChild]));
+                }
+                else if (whereHaveBrothers == -1)
+                {
+                    var leftBrother = GetNode(parent.Childs[indexChild - 1]);
+
+                    if (CanLend(leftBrother))
+                        GetLeft(parent, leftBrother, nodeDef, parent.Values.IndexOf(parent.Values[indexChild - 1]));
+                    else
+                        PutTogether(parent, leftBrother, nodeDef, parent.Values.IndexOf(parent.Values[indexChild - 1]));
+                }
+            }
+        }//reglas del balanceo
+
+        void GetRight(BNode<T> parent, BNode<T> rigthBrother, BNode<T> nodeDef, int indexCommonRoot)
+        {
+            //extraer valores que se van a prestar
+            var commonRoot = parent.Values[indexCommonRoot];
+            var newRoot = rigthBrother.Values[0];
+
+            var nodeTransfered = new BNode<T>(Grade);
+            if (!IsLeaf(nodeDef))
+            {
+                int indexTemp = nodeDef.Childs.IndexOf(-1);
+                nodeTransfered = GetNode(rigthBrother.Childs[0]);
+                nodeTransfered.Father = nodeDef.Id;
+                nodeDef.Childs.Insert(indexTemp, nodeTransfered.Id);
+                nodeDef.Childs.Remove(-1);
+                rigthBrother.Childs.Remove(nodeTransfered.Id);
+                rigthBrother.Childs.Add(-1);
+                rigthBrother.Values.Remove(newRoot);
+            }
+            else
+            {
+                rigthBrother.Childs.RemoveAt(0);
+                rigthBrother.Childs.Add(-1);
+                rigthBrother.Values.Remove(newRoot);
+            }
+
+            //cabio valores
+            nodeDef.Values.Add(commonRoot);
+            parent.Values.Remove(commonRoot);
+            parent.Values.Insert(indexCommonRoot, newRoot);
+
+            Fm.WriteNode(nodeDef);
+            if (nodeTransfered.Id != 0) 
+            Fm.WriteNode(nodeTransfered);
+            Fm.WriteNode(parent);
+            Fm.WriteNode(rigthBrother);
+
+
+        }
+        void GetLeft(BNode<T> parent, BNode<T> leftBrother, BNode<T> nodeDef, int indexCommonRoot)
+        {
+            int index = 0;
+
+            nodeDef.Values.Add(parent.Values[indexCommonRoot]);
+            parent.Values[indexCommonRoot] = leftBrother.Values[leftBrother.Values.Count - 1];
+            leftBrother.Values.RemoveAt(leftBrother.Values.Count - 1);
+
+            if (leftBrother.Childs.Contains(-1))
+            {
+                index = leftBrother.Childs.IndexOf(-1);
+                index -= 1;
+            }
+            else
+            {
+                index = leftBrother.Childs.Count - 1;
+            }
+            
+            var nodeTransfered = GetNode(leftBrother.Childs[index]);
+            nodeTransfered.Father = nodeDef.Id;
+
+            leftBrother.Childs.Remove(nodeTransfered.Id);
+            leftBrother.Childs.Add(-1);
+
+            nodeDef.Childs.Insert(0, nodeTransfered.Id);
+            nodeDef.Childs.Remove(-1);
+
+            Fm.WriteNode(nodeDef);
+            Fm.WriteNode(nodeTransfered);
+            Fm.WriteNode(parent);
+            Fm.WriteNode(leftBrother);
+        }
+
+        int WhereHaveBrothers(BNode<T> parent, int indexChild)
+        {
+            if (indexChild == 0)
+                return 1;
+            else if (indexChild == parent.Childs.Count - 1)
+                return -1;
+            else if (parent.Childs[indexChild + 1] == -1)
+                return -1;
+            else
+            return 0;
+        }
+            
+        bool IsUnderflow(BNode<T> bNode)
+        {
+            var min = (Grade -1)/ 2;
+            if (bNode.Values.Count < min) return true;
+            return false;
+        }
+        bool CanLend(BNode<T> bNode)
+        {
+            var minValues = (Grade-1) / 2;
+            if (bNode.Values.Count == minValues) return false;
+            return true;
+        }
+        
+
+
+        #region Funciones Principales
+>>>>>>> TreeDeleteMethod
         public void Insert(T value)
         {
             if (Root == 0)
@@ -47,10 +354,18 @@ namespace LAB_1___DataStructures.NoLinealStructures.Tree
                     if (IsOverFlow(root))
                     {
                         SplitParent(root);
+<<<<<<< HEAD
+=======
+                        UpdateTree(Root, Next_Id);
+>>>>>>> TreeDeleteMethod
                         return;
                     }
                     else
                         Fm.WriteNode(root);
+<<<<<<< HEAD
+=======
+                    UpdateTree(Root, Next_Id);
+>>>>>>> TreeDeleteMethod
                     return;
                 }
             }
@@ -59,6 +374,10 @@ namespace LAB_1___DataStructures.NoLinealStructures.Tree
                 Insert(root, value, 0);
                 root = GetNode(root.Id);
                 if (IsOverFlow(root)) SplitParent(root);
+<<<<<<< HEAD
+=======
+                UpdateTree(Root, Next_Id);
+>>>>>>> TreeDeleteMethod
             }
         }
 
@@ -105,6 +424,10 @@ namespace LAB_1___DataStructures.NoLinealStructures.Tree
                 return;
             }
         }
+<<<<<<< HEAD
+=======
+        #endregion
+>>>>>>> TreeDeleteMethod
 
         #region Balanceos
         private void SplitParent(BNode<T> parentToSplit)
@@ -251,6 +574,10 @@ namespace LAB_1___DataStructures.NoLinealStructures.Tree
             }
             return false;
         }
+<<<<<<< HEAD
+=======
+       
+>>>>>>> TreeDeleteMethod
         void removeChild (BNode<T> node)
         {
             if (node.Childs.Count > Grade && node.Childs[Grade] == -1)
@@ -258,16 +585,28 @@ namespace LAB_1___DataStructures.NoLinealStructures.Tree
                 node.Childs.RemoveAt(Grade);
             }
         }
+<<<<<<< HEAD
+=======
+        
+>>>>>>> TreeDeleteMethod
         int SetNextId()
         {
             Next_Id++;
             return Next_Id - 1;
         }
+<<<<<<< HEAD
+=======
+        
+>>>>>>> TreeDeleteMethod
         bool IsOverFlow(BNode<T> node)
         {
             if (node.Values.Count == Grade) return true;
             return false;
         }
+<<<<<<< HEAD
+=======
+       
+>>>>>>> TreeDeleteMethod
         private void SortChilds(BNode<T> Parent, int IdChild, T value)
         {
             List<int> chilsSorted = new List<int>();
@@ -279,7 +618,11 @@ namespace LAB_1___DataStructures.NoLinealStructures.Tree
                 Parent.Childs.RemoveAt(Grade+1);
             }
         }
+<<<<<<< HEAD
 
+=======
+        
+>>>>>>> TreeDeleteMethod
         private int PositionValue(BNode<T> Parent, T value)
         {
             var count = 0;
@@ -294,8 +637,12 @@ namespace LAB_1___DataStructures.NoLinealStructures.Tree
             }
             return count;
         }
+<<<<<<< HEAD
 
 
+=======
+        
+>>>>>>> TreeDeleteMethod
         bool IsLeaf(BNode<T> node)
         {
             for (int i = 0; i < node.Childs.Count; i++)
@@ -304,6 +651,10 @@ namespace LAB_1___DataStructures.NoLinealStructures.Tree
             }
             return true;
         }
+<<<<<<< HEAD
+=======
+
+>>>>>>> TreeDeleteMethod
         private BNode<T> GetNode(int position)
         {
             BNode<T> node = Fm.CastNode(position);
@@ -311,12 +662,20 @@ namespace LAB_1___DataStructures.NoLinealStructures.Tree
 
             return node;
         }
+<<<<<<< HEAD
+=======
+
+>>>>>>> TreeDeleteMethod
         private void UpdateTree(int root, int next_id)
         {
             Root = root;
             Fm.UpdateProperties(root, next_id);
         }
+<<<<<<< HEAD
         #endregion
+=======
+
+>>>>>>> TreeDeleteMethod
         private BNode<T> SortNode(BNode<T> node)
         {
             int length = node.Values.Count;
@@ -334,6 +693,7 @@ namespace LAB_1___DataStructures.NoLinealStructures.Tree
             }
             return node;
         }
+<<<<<<< HEAD
         #region Funcionando
         public void Delete()
         {
@@ -344,6 +704,11 @@ namespace LAB_1___DataStructures.NoLinealStructures.Tree
         {
             throw new NotImplementedException();
         }
+=======
+        #endregion
+
+        #region Recorridos
+>>>>>>> TreeDeleteMethod
 
         public List<T> ToPreOrden()
         {
