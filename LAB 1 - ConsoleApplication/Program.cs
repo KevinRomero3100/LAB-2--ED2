@@ -22,12 +22,21 @@ namespace LAB_1___ConsoleApplication
             int longitud_campo = 4;
             int grado = 6;
             /////////////////////////////////////////////////////////////////////////
-
+            FileManage<int> fm = new FileManage<int>();
             string fileName = "data.txt";
             string fullPath = Path.GetFullPath(fileName);
+            string[] absolutePath = fullPath.Split("bin");
+            fullPath = absolutePath[0] + fileName;
+            if (!File.Exists(fullPath))
+            {
+                FileStream file = new FileStream(fullPath, FileMode.OpenOrCreate);
+                file.Close();
+            }
 
-            FileManage<int> fm = new FileManage<int>();
+            
             fm.Path = fullPath;
+            fm.DeleteFile();
+            fm.UpdateGrade(grado);
             fm.FieldLength = longitud_campo;
             fm.LineLength = 75 + ((grado) * longitud_campo);
             fm.ValueConverter = ConvertNodetoT;
@@ -36,7 +45,7 @@ namespace LAB_1___ConsoleApplication
             BTree<int> Tree = new BTree<int>();
             Tree.Comparer = KeyComparison;
             Tree.Fm = fm;
-            Tree.IniciateTree();
+            Tree.InitiateTree();
 
             ///PRUEBAS
             int[] values = new int[] { 15, 69, 34, 90,72,24,49,71,52,65,87,82,100,75,18,50,84,29,76,39,13,56,8,62,60,53,38,41,36,33,43,4,16};

@@ -14,7 +14,7 @@ namespace LAB_1___DataStructures.NoLinealStructures.Tree
         public FileManage<T> Fm;
         public int Count;
 
-        public void IniciateTree()
+        public void InitiateTree()
         {
             int[] meta_data = Fm.ReadProperties();
             Root = meta_data[0];
@@ -29,7 +29,7 @@ namespace LAB_1___DataStructures.NoLinealStructures.Tree
             BNode<T> root = GetNode(Root);
             if (IsLeaf(root))
             {
-                if (root.Values.Contains(value))
+                if (Contains(root, value))
                 {
                     var posValues = root.Values.IndexOf(value);
                     root.Values.RemoveAt(posValues);
@@ -49,7 +49,7 @@ namespace LAB_1___DataStructures.NoLinealStructures.Tree
         public void Delete( BNode<T> root,T value, int pos, int idParent)
         {
 
-            if (root.Values.Contains(value))
+            if (Contains(root, value))
             {
                 var posValues = root.Values.IndexOf(value);
                 if (IsLeaf(root))
@@ -274,20 +274,22 @@ namespace LAB_1___DataStructures.NoLinealStructures.Tree
             }
             else
             {
-                index = leftBrother.Childs.Count - 1;
+                    index = leftBrother.Childs.Count - 1;
             }
-            
-            var nodeTransfered = GetNode(leftBrother.Childs[index]);
-            nodeTransfered.Father = nodeDef.Id;
+            if (!IsLeaf(leftBrother))
+            {
+                var nodeTransfered = GetNode(leftBrother.Childs[index]);
+                nodeTransfered.Father = nodeDef.Id;
 
-            leftBrother.Childs.Remove(nodeTransfered.Id);
-            leftBrother.Childs.Add(-1);
+                leftBrother.Childs.Remove(nodeTransfered.Id);
+                leftBrother.Childs.Add(-1);
 
-            nodeDef.Childs.Insert(0, nodeTransfered.Id);
-            nodeDef.Childs.Remove(-1);
+                nodeDef.Childs.Insert(0, nodeTransfered.Id);
+                nodeDef.Childs.Remove(-1);
+                Fm.WriteNode(nodeTransfered);
+            }
 
             Fm.WriteNode(nodeDef);
-            Fm.WriteNode(nodeTransfered);
             Fm.WriteNode(parent);
             Fm.WriteNode(leftBrother);
         }
@@ -306,9 +308,20 @@ namespace LAB_1___DataStructures.NoLinealStructures.Tree
             
         bool IsUnderflow(BNode<T> bNode)
         {
-            var min = (Grade -1)/ 2;
-            if (bNode.Values.Count < min) return true;
-            return false;
+            if (bNode.Father > -1)
+            {
+                var min = (Grade - 1) / 2;
+                if (bNode.Values.Count < min) return true;
+                return false;
+            }
+            else
+            {
+                if (bNode.Values.Count == 0)
+                {
+                    return true;
+                }
+                return false;
+            }
         }
         bool CanLend(BNode<T> bNode)
         {
@@ -369,7 +382,7 @@ namespace LAB_1___DataStructures.NoLinealStructures.Tree
             {
                 if (!ExistInLeaf(root,value))
                 {
-                    IncertarEnHoja(root, value);
+                    InsertarEnHoja(root, value);
                     return;
                 }
                 return;
@@ -488,7 +501,7 @@ namespace LAB_1___DataStructures.NoLinealStructures.Tree
             Fm.WriteNode(newParent);
 
         }
-        private void IncertarEnHoja(BNode<T> leaf, T value)
+        private void InsertarEnHoja(BNode<T> leaf, T value)
         {
             BNode<T> parent;
             BNode<T> newLeaf = new BNode<T>(Grade);
