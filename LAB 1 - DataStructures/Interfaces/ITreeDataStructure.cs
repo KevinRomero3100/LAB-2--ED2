@@ -9,6 +9,7 @@ namespace LAB_1___DataStructures.Interfaces
     {
         void Insert(T value);
         void Delete(T value);
+        bool Exist(T value);
         List<T> ToPreOrden();
         List<T> ToInOrden();
         List<T> ToPostOrden();

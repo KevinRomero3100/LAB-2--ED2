@@ -39,61 +39,34 @@ namespace LAB_1___ConsoleApplication
             Tree.IniciateTree();
 
             ///PRUEBAS
+            int[] values = new int[] { 15, 69, 34, 90,72,24,49,71,52,65,87,82,100,75,18,50,84,29,76,39,13,56,8,62,60,53,38,41,36,33,43,4,16};
+            for (int i = 0; i < values.Length; i++)
+            {
+                Tree.Insert(values[i]);
+            }
 
-            Tree.Insert(15);
-            Tree.Insert(84);
-            Tree.Insert(69);
-            Tree.Insert(34);
-            Tree.Insert(90);
-            Tree.Insert(72);
-            Tree.Insert(24);
-            Tree.Insert(100);
-            Tree.Insert(49);
-            Tree.Insert(71);
-            Tree.Insert(52);
-            Tree.Insert(65);
-            Tree.Insert(87);
-            Tree.Insert(82);
-            Tree.Insert(84);
-            Tree.Insert(100);
-            Tree.Insert(76);
-            Tree.Insert(41);
-            Tree.Insert(75);
-            Tree.Insert(18);
-            Tree.Insert(50);
-            Tree.Insert(84);
-            Tree.Insert(29);
-            Tree.Insert(24);
-            Tree.Insert(76);
-            Tree.Insert(39);
-            Tree.Insert(13);
-            Tree.Insert(56);
-            Tree.Insert(8);
-            Tree.Insert(62);
-            Tree.Insert(75);
-            Tree.Insert(60);
-            Tree.Insert(53);
-            Tree.Insert(38);
-            Tree.Insert(41);
-            Tree.Insert(36);
-            Tree.Insert(33);
-            Tree.Insert(43);
-            Tree.Insert(4);
-            Tree.Insert(16);
+            bool resultado11 = Tree.Exist(90);
+            bool resultado22= Tree.Exist(18);
+            bool resultado33 = Tree.Exist(36);
+            bool resultado44 = Tree.Exist(4);
+            bool resultado55 = Tree.Exist(15);
 
+            Tree.Delete(90);
+            Tree.Delete(18);
+            Tree.Delete(36);
+            Tree.Delete(4);
+            Tree.Delete(15);
 
+            bool resultado1 = Tree.Exist(90);
+            bool resultado2 = Tree.Exist(18);
+            bool resultado3 = Tree.Exist(36);
+            bool resultado4 = Tree.Exist(4);
+            bool resultado5 = Tree.Exist(15);
 
-            //BNode<int> prueba = fm.CastNode(1);
-            //prueba.Id = 2;
-            //fm.WriteNode(prueba);
-            //BNode<int> confirmacion = fm.CastNode(2);
-            //BNode<int> nodetest = fm.CastNode(8);
-            //nodetest.Id = 13;
-            //nodetest.Father = 45;
-            //fm.WriteNode(nodetest);
+            bool resultado6 = Tree.Exist(999);
+            bool resultado7 = Tree.Exist(111);
+            bool resultado8 = Tree.Exist(333);
 
-
-            ///
 
 
             //PREORDEN

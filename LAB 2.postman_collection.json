@@ -1,0 +1,133 @@
+{
+	"info": {
+		"_postman_id": "ab3ad89e-970d-43f0-87a2-eb23d3303c91",
+		"name": "LAB 2",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Step 1 - Set the grade of the Tree",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"order\":5\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:51489/api/movies",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "51489",
+					"path": [
+						"api",
+						"movies"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Step 2 - Add values on the Tree",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "file",
+							"type": "file",
+							"src": "/C:/Users/José De León/Desktop/json/test1.json"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://localhost:51489/api/movies/populate",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "51489",
+					"path": [
+						"api",
+						"movies",
+						"populate"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Step 3 - Request the Tree state with a traversal",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:51489/api/movies/inorden",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "51489",
+					"path": [
+						"api",
+						"movies",
+						"inorden"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Step 4 - Delete values of the Tree",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:51489/api/movies/populate/20,000 Leagues Under the Sea-1954",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "51489",
+					"path": [
+						"api",
+						"movies",
+						"populate",
+						"20,000 Leagues Under the Sea-1954"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Step 5 - Delete all Tree on Disk",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:51489/api/movies",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "51489",
+					"path": [
+						"api",
+						"movies"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"protocolProfileBehavior": {}
+}

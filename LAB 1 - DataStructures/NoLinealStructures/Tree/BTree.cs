@@ -1,13 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-<<<<<<< HEAD
-=======
-using System.Dynamic;
-using System.Globalization;
-using System.Runtime.CompilerServices;
-using System.Runtime.Intrinsics.X86;
-using System.Xml;
->>>>>>> TreeDeleteMethod
+
 
 namespace LAB_1___DataStructures.NoLinealStructures.Tree
 {
@@ -30,9 +23,7 @@ namespace LAB_1___DataStructures.NoLinealStructures.Tree
             Fm.Grade = meta_data[2];
         }
 
-<<<<<<< HEAD
 
-=======
         public void Delete(T value)
         {
             BNode<T> root = GetNode(Root);
@@ -132,7 +123,7 @@ namespace LAB_1___DataStructures.NoLinealStructures.Tree
             }
             
         }
-        #region Unir Nodos
+
         void PutTogether(BNode<T> parent, BNode<T> reciveNode, BNode<T> addNode, int indexCommoRoot)
         {
             var commonRoot = parent.Values[indexCommoRoot];
@@ -186,7 +177,7 @@ namespace LAB_1___DataStructures.NoLinealStructures.Tree
                 
             }
         }
-        #endregion
+
         public void Balance(BNode<T> nodeDef)
         {
             var parent = GetNode(nodeDef.Father);
@@ -327,9 +318,6 @@ namespace LAB_1___DataStructures.NoLinealStructures.Tree
         }
         
 
-
-        #region Funciones Principales
->>>>>>> TreeDeleteMethod
         public void Insert(T value)
         {
             if (Root == 0)
@@ -354,18 +342,14 @@ namespace LAB_1___DataStructures.NoLinealStructures.Tree
                     if (IsOverFlow(root))
                     {
                         SplitParent(root);
-<<<<<<< HEAD
-=======
+
                         UpdateTree(Root, Next_Id);
->>>>>>> TreeDeleteMethod
                         return;
                     }
                     else
                         Fm.WriteNode(root);
-<<<<<<< HEAD
-=======
+
                     UpdateTree(Root, Next_Id);
->>>>>>> TreeDeleteMethod
                     return;
                 }
             }
@@ -374,10 +358,8 @@ namespace LAB_1___DataStructures.NoLinealStructures.Tree
                 Insert(root, value, 0);
                 root = GetNode(root.Id);
                 if (IsOverFlow(root)) SplitParent(root);
-<<<<<<< HEAD
-=======
+
                 UpdateTree(Root, Next_Id);
->>>>>>> TreeDeleteMethod
             }
         }
 
@@ -424,12 +406,8 @@ namespace LAB_1___DataStructures.NoLinealStructures.Tree
                 return;
             }
         }
-<<<<<<< HEAD
-=======
-        #endregion
->>>>>>> TreeDeleteMethod
 
-        #region Balanceos
+
         private void SplitParent(BNode<T> parentToSplit)
         {
 
@@ -562,9 +540,7 @@ namespace LAB_1___DataStructures.NoLinealStructures.Tree
             }
 
         }
-        #endregion 
 
-        #region Auxiliares
         bool ExistInLeaf(BNode<T> leaf, T value)
         {
             foreach (var item in leaf.Values)
@@ -574,10 +550,7 @@ namespace LAB_1___DataStructures.NoLinealStructures.Tree
             }
             return false;
         }
-<<<<<<< HEAD
-=======
-       
->>>>>>> TreeDeleteMethod
+
         void removeChild (BNode<T> node)
         {
             if (node.Childs.Count > Grade && node.Childs[Grade] == -1)
@@ -585,28 +558,19 @@ namespace LAB_1___DataStructures.NoLinealStructures.Tree
                 node.Childs.RemoveAt(Grade);
             }
         }
-<<<<<<< HEAD
-=======
-        
->>>>>>> TreeDeleteMethod
+
         int SetNextId()
         {
             Next_Id++;
             return Next_Id - 1;
         }
-<<<<<<< HEAD
-=======
-        
->>>>>>> TreeDeleteMethod
+
         bool IsOverFlow(BNode<T> node)
         {
             if (node.Values.Count == Grade) return true;
             return false;
         }
-<<<<<<< HEAD
-=======
-       
->>>>>>> TreeDeleteMethod
+
         private void SortChilds(BNode<T> Parent, int IdChild, T value)
         {
             List<int> chilsSorted = new List<int>();
@@ -618,11 +582,7 @@ namespace LAB_1___DataStructures.NoLinealStructures.Tree
                 Parent.Childs.RemoveAt(Grade+1);
             }
         }
-<<<<<<< HEAD
 
-=======
-        
->>>>>>> TreeDeleteMethod
         private int PositionValue(BNode<T> Parent, T value)
         {
             var count = 0;
@@ -637,12 +597,7 @@ namespace LAB_1___DataStructures.NoLinealStructures.Tree
             }
             return count;
         }
-<<<<<<< HEAD
 
-
-=======
-        
->>>>>>> TreeDeleteMethod
         bool IsLeaf(BNode<T> node)
         {
             for (int i = 0; i < node.Childs.Count; i++)
@@ -651,10 +606,7 @@ namespace LAB_1___DataStructures.NoLinealStructures.Tree
             }
             return true;
         }
-<<<<<<< HEAD
-=======
 
->>>>>>> TreeDeleteMethod
         private BNode<T> GetNode(int position)
         {
             BNode<T> node = Fm.CastNode(position);
@@ -662,20 +614,13 @@ namespace LAB_1___DataStructures.NoLinealStructures.Tree
 
             return node;
         }
-<<<<<<< HEAD
-=======
 
->>>>>>> TreeDeleteMethod
         private void UpdateTree(int root, int next_id)
         {
             Root = root;
             Fm.UpdateProperties(root, next_id);
         }
-<<<<<<< HEAD
-        #endregion
-=======
 
->>>>>>> TreeDeleteMethod
         private BNode<T> SortNode(BNode<T> node)
         {
             int length = node.Values.Count;
@@ -693,22 +638,7 @@ namespace LAB_1___DataStructures.NoLinealStructures.Tree
             }
             return node;
         }
-<<<<<<< HEAD
-        #region Funcionando
-        public void Delete()
-        {
-            throw new NotImplementedException();
-        }
 
-        public void Delete(T value)
-        {
-            throw new NotImplementedException();
-        }
-=======
-        #endregion
-
-        #region Recorridos
->>>>>>> TreeDeleteMethod
 
         public List<T> ToPreOrden()
         {
@@ -824,7 +754,51 @@ namespace LAB_1___DataStructures.NoLinealStructures.Tree
                 currentList.Add(value[i]);
             }
         }
-        #endregion
+
+        public bool Exist(T value)
+        {
+            BNode<T> nodef = Fm.CastNode(Root);
+            return Exist(nodef, value);
+        }
+
+        private bool Exist(BNode<T> nodef, T value)
+        {
+            
+            if (Contains(nodef, value)) return true;
+            if (IsLeaf(nodef) && !Contains(nodef, value))
+            {
+                return false;
+            }
+            if ((int)Comparer.DynamicInvoke(nodef.Values[0], value) == 1)
+            {
+                BNode<T> next_node = Fm.CastNode(nodef.Childs[0]);
+                return Exist(next_node, value);
+            }
+            if ((int)Comparer.DynamicInvoke(nodef.Values[nodef.Values.Count-1], value) == -1)
+            {
+                BNode<T> next_node = Fm.CastNode(nodef.Childs[nodef.Values.Count]);
+                return Exist(next_node, value);
+            }
+            else
+            {
+                for (int i = 0; i < Grade - 2; i++)
+                {
+                    BNode<T> next_node = Fm.CastNode(nodef.Childs[i+1]);
+                    return Exist(next_node, value);
+
+                }
+            }
+            return false;
+        }
+
+        private bool Contains(BNode<T> nodef, T value)
+        {
+            for (int i = 0; i < nodef.Values.Count; i++)
+            {
+                if ((int)Comparer.DynamicInvoke(nodef.Values[i], value) == 0) return true;
+            }
+            return false;
+        }
     }
 
 }

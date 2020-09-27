@@ -136,13 +136,6 @@ namespace LAB_1___DataStructures
             }
         }
 
-        public void WriteEmpty(int position)
-        {
-            using (var fs = new FileStream(Path, FileMode.OpenOrCreate))
-            {
-
-            }
-        }
 
         public void DeleteFile()
         {

@@ -135,15 +135,16 @@ namespace LAB_1___API.Controllers
         {
             try
             {
-                //if (Storage.Instance.BTree.Exist(id))
-                //{
-                //    Storage.Instance.BTree.Delete(id);
-                //    return Ok();
-                //}
-                //else
-                //{
+                Movie movie_delete = new Movie() { Id = id };
+                if (Storage.Instance.BTree.Exist(movie_delete))
+                {
+                   Storage.Instance.BTree.Delete(movie_delete);
+                   return Ok();
+                }
+                else
+                {
                     return NotFound();
-                //}
+                }
             }
             catch (Exception)
             {
