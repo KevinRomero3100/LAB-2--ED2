@@ -42,7 +42,7 @@ namespace LAB_1___API
 
             Storage.Instance.BTree.Grade = grade;
             Storage.Instance.BTree.Comparer = IdComparison;
-            Storage.Instance.BTree.IniciateTree();
+            Storage.Instance.BTree.InitiateTree();
         }
 
         public static Comparison<Movie> IdComparison = delegate (Movie movie1, Movie movie2)

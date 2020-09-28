@@ -23,7 +23,6 @@ namespace LAB_1___DataStructures.NoLinealStructures.Tree
             Fm.Grade = meta_data[2];
         }
 
-
         public void Delete(T value)
         {
             BNode<T> root = GetNode(Root);
@@ -31,7 +30,7 @@ namespace LAB_1___DataStructures.NoLinealStructures.Tree
             {
                 if (Contains(root, value))
                 {
-                    var posValues = root.Values.IndexOf(value);
+                    var posValues = root.Values.IndexOf(value);//
                     root.Values.RemoveAt(posValues);
                     Fm.WriteNode(root);
                     return;
@@ -51,7 +50,7 @@ namespace LAB_1___DataStructures.NoLinealStructures.Tree
 
             if (Contains(root, value))
             {
-                var posValues = root.Values.IndexOf(value);
+                var posValues = IndexOf(root.Values, value);//
                 if (IsLeaf(root))
                 {
                     root.Values.RemoveAt(posValues);
@@ -106,7 +105,7 @@ namespace LAB_1___DataStructures.NoLinealStructures.Tree
                     var valueSuplit = root.Values[root.Values.Count - 1];//obtengo ultimo valor
                     root.Values.Remove(valueSuplit);//quito de la hoja
                     var changeInParent = GetNode(idParent);//llamo al padre donde sustituire
-                    var posDel = changeInParent.Values.IndexOf(value);//index del valor eliminado
+                    var posDel = IndexOf(changeInParent.Values,value);//index del valor eliminado     
                     changeInParent.Values.RemoveAt(posDel);//elimino de la raiz sonde se quedo contenido
                     changeInParent.Values.Insert(posDel, valueSuplit);//incerto el valor en la raiz donde lo encontre
                     Fm.WriteNode(changeInParent);
@@ -115,7 +114,11 @@ namespace LAB_1___DataStructures.NoLinealStructures.Tree
                     {
                         root.Father = changeInParent.Id;
                         Balance(root);
-                    };
+                    }
+                    else
+                    {
+                        Fm.WriteNode(root);
+                    }
 
                     return;
                 }
@@ -160,6 +163,7 @@ namespace LAB_1___DataStructures.NoLinealStructures.Tree
             }
             
         }
+
         void AddChids(BNode<T> reciveNode, BNode<T> addNode)
         {
             var index = reciveNode.Childs.IndexOf(-1);
@@ -188,15 +192,15 @@ namespace LAB_1___DataStructures.NoLinealStructures.Tree
                 var rhigthBrother = GetNode(parent.Childs[indexChild + 1]);
                 var leftBrother = GetNode(parent.Childs[indexChild - 1]);
                 if (rhigthBrother.Values.Count > leftBrother.Values.Count)
-                    GetRight(parent, rhigthBrother, nodeDef, parent.Values.IndexOf(parent.Values[indexChild]));
-                else if (leftBrother.Values.Count > rhigthBrother.Values.Count) 
-                    GetLeft(parent,leftBrother, nodeDef, parent.Values.IndexOf(parent.Values[indexChild - 1]));
+                    GetRight(parent, rhigthBrother, nodeDef, IndexOf(parent.Values, parent.Values[indexChild]));//
+                else if (leftBrother.Values.Count > rhigthBrother.Values.Count)
+                    GetLeft(parent, leftBrother, nodeDef, IndexOf(parent.Values, parent.Values[indexChild - 1]));//
                 else
                 {
                     if (CanLend(leftBrother))
-                        GetLeft(parent, leftBrother, nodeDef, parent.Values.IndexOf(parent.Values[indexChild - 1]));
+                        GetLeft(parent, leftBrother, nodeDef, IndexOf(parent.Values, parent.Values[indexChild - 1]));//
                     else
-                        PutTogether(parent, leftBrother, nodeDef, parent.Values.IndexOf(parent.Values[indexChild-1]));
+                        PutTogether(parent, leftBrother, nodeDef, IndexOf(parent.Values, parent.Values[indexChild - 1]));//
                 }
             }
             else
@@ -205,18 +209,18 @@ namespace LAB_1___DataStructures.NoLinealStructures.Tree
                 {
                     var rhigthBrother = GetNode(parent.Childs[indexChild + 1]);
                     if (CanLend(rhigthBrother))
-                        GetRight(parent, rhigthBrother, nodeDef, parent.Values.IndexOf(parent.Values[indexChild]));
+                        GetRight(parent, rhigthBrother, nodeDef, IndexOf(parent.Values, parent.Values[indexChild]));//
                     else
-                        PutTogether(parent, nodeDef, rhigthBrother, parent.Values.IndexOf(parent.Values[indexChild]));
+                        PutTogether(parent, nodeDef, rhigthBrother, IndexOf(parent.Values, parent.Values[indexChild]));//
                 }
                 else if (whereHaveBrothers == -1)
                 {
                     var leftBrother = GetNode(parent.Childs[indexChild - 1]);
 
                     if (CanLend(leftBrother))
-                        GetLeft(parent, leftBrother, nodeDef, parent.Values.IndexOf(parent.Values[indexChild - 1]));
+                        GetLeft(parent, leftBrother, nodeDef, IndexOf(parent.Values, parent.Values[indexChild - 1]));//
                     else
-                        PutTogether(parent, leftBrother, nodeDef, parent.Values.IndexOf(parent.Values[indexChild - 1]));
+                        PutTogether(parent, leftBrother, nodeDef, IndexOf(parent.Values, parent.Values[indexChild - 1]));//
                 }
             }
         }//reglas del balanceo
@@ -259,6 +263,7 @@ namespace LAB_1___DataStructures.NoLinealStructures.Tree
 
 
         }
+
         void GetLeft(BNode<T> parent, BNode<T> leftBrother, BNode<T> nodeDef, int indexCommonRoot)
         {
             int index = 0;
@@ -323,13 +328,13 @@ namespace LAB_1___DataStructures.NoLinealStructures.Tree
                 return false;
             }
         }
+
         bool CanLend(BNode<T> bNode)
         {
             var minValues = (Grade-1) / 2;
             if (bNode.Values.Count == minValues) return false;
             return true;
         }
-        
 
         public void Insert(T value)
         {
@@ -419,7 +424,6 @@ namespace LAB_1___DataStructures.NoLinealStructures.Tree
                 return;
             }
         }
-
 
         private void SplitParent(BNode<T> parentToSplit)
         {
@@ -652,7 +656,6 @@ namespace LAB_1___DataStructures.NoLinealStructures.Tree
             return node;
         }
 
-
         public List<T> ToPreOrden()
         {
             List<T> currentList = new List<T>();
@@ -811,6 +814,16 @@ namespace LAB_1___DataStructures.NoLinealStructures.Tree
                 if ((int)Comparer.DynamicInvoke(nodef.Values[i], value) == 0) return true;
             }
             return false;
+        }
+
+        private int IndexOf(List<T> values, T value)
+        {
+            for (int i = 0; i < values.Count; i++)
+            {
+                if ((int)Comparer.DynamicInvoke(values[i], value) == 0) 
+                    return i;
+            }
+            return -1;
         }
     }
 

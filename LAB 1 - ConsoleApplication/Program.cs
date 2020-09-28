@@ -20,7 +20,7 @@ namespace LAB_1___ConsoleApplication
 
             //VARIABLES//////////////////////////////////////////////////////////////
             int longitud_campo = 4;
-            int grado = 6;
+            int grado = 3;
             /////////////////////////////////////////////////////////////////////////
             FileManage<int> fm = new FileManage<int>();
             string fileName = "data.txt";
